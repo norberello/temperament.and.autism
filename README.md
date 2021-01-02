@@ -4,5 +4,4 @@ Pisula E, Kawa R, Danielewicz D, Pisula W (2015) The Relationship between Temper
 ```r
 library(ggplot2)
 ```
-
-<img src="figures/monthlytempHIST.png">
+<img src="figures/fig 2.png">
