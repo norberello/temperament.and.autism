@@ -1,0 +1,105 @@
+---
+title: "Autism and temperament"
+author: "Norberto Asensio"
+date: "02/01/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The Relationship between Temperament and Autistic Traits in a Non-Clinical Students Sample
+<https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0124364>
+
+```{r}
+#read data
+url<-"https://raw.githubusercontent.com/norberello/temperament.and.autism/main/pone.0124364.s001.csv"
+au.data<-read.csv(url)
+au.males<-au.data[which(au.data$Sex=="Male"),]
+au.females<-au.data[which(au.data$Sex=="Female"),]
+str(au.data)
+head(au.data)
+#save Rdatasets in an object
+save(au.data,au.males,au.females, file = "AUdata.RData")
+```
+
+```{r}
+#AQ autism spectrum quotient
+hist(au.data$AQ,breaks = 40)
+```
+
+```{r}
+par(mfrow=c(2,2))
+hist(au.data$AQ,breaks=30,probability = T)
+lines(density(au.data$AQ),col="red",lwd=2)
+plot(ecdf(au.data$AQ))
+library(car)
+qqPlot(au.data$AQ)
+boxplot(au.data$AQ)
+```
+
+```{r}
+# Basic ECDF plot
+ggplot(au.data, aes(AQ)) + stat_ecdf(geom = "step")+
+  labs(title="Empirical Cumulative \n Density Function",
+       y = "F(AQ)", x="AQ (Autism quotient)")+
+  theme_classic()
+```
+
+
+```{r}
+library(lattice)
+densityplot(~ AQ, group = Sex, data = au.data,
+            auto.key = TRUE)
+```
+
+```{r}
+library(hrbrthemes)
+ggplot(au.data) + 
+  geom_density(aes(x = AQ, color = Sex),
+               alpha = 0.2)+theme_ipsum()
+```
+
+```{r}
+# Multiple ECDFs
+ggplot(au.data, aes(AQ,colour=Sex)) + 
+  stat_ecdf()
+```
+
+```{r}
+library(GGally)
+ggpairs(au.data, columns = 2:4,
+        ggplot2::aes(colour=Sex))
+```
+
+```{r}
+ggcorr(au.data[, c(4:15)],
+       palette = "RdBu", label = TRUE)
+```
+
+```{r}
+ggplot(au.data, aes(x=Sex, y=AQ,color=Sex)) + 
+  geom_boxplot()+ stat_summary(fun.y=mean, geom="point", shape=23, size=4)+theme_ipsum()
+```
+
+```{r}
+t.test(AQ~Sex,au.data)
+```
+
+```{r}
+require(gridExtra)
+#FCB activity and AQ females (correlation)
+a<-ggplot(au.females, aes(x=AQ, y=FCB.Activity))+ 
+  geom_point()+ggtitle("females") +
+  xlab("autism spectrum quotient")+geom_smooth(method=lm)+theme_bw()
+#FCB emotional reactivity and AQ males (correlation)
+b<-ggplot(au.males, aes(x=AQ, y=FCB.Em.reactivity))+ 
+  geom_point()+
+  geom_smooth(method=lm)+theme_bw()+ggtitle("males") +
+  xlab("autism spectrum quotient")
+grid.arrange(a,b, ncol=2)
+```
+
+
+
