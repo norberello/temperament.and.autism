@@ -1,6 +1,6 @@
 ---
 title: "Autism and temperament"
-author: "Norberto Asensio"
+author: ""
 date: "02/01/2021"
 output: html_document
 ---
@@ -21,7 +21,16 @@ au.females<-au.data[which(au.data$Sex=="Female"),]
 str(au.data)
 head(au.data)
 #save Rdatasets in an object
-save(au.data,au.males,au.females, file = "AUdata.RData")
+#save(au.data,au.males,au.females, file = "AUdata.RData")
+```
+
+```{r}
+summary(au.data)
+```
+
+```{r}
+library(psych)
+describe(au.data)
 ```
 
 ```{r}
@@ -41,6 +50,7 @@ boxplot(au.data$AQ)
 
 ```{r}
 # Basic ECDF plot
+library(ggplot2)
 ggplot(au.data, aes(AQ)) + stat_ecdf(geom = "step")+
   labs(title="Empirical Cumulative \n Density Function",
        y = "F(AQ)", x="AQ (Autism quotient)")+
@@ -62,9 +72,30 @@ ggplot(au.data) +
 ```
 
 ```{r}
+ggplot(au.data) + 
+  geom_density(aes(x = AQ,color=Sex),
+               alpha = 0.2)+theme_ipsum()+
+  facet_wrap(~ Sex)
+```
+
+
+```{r}
 # Multiple ECDFs
 ggplot(au.data, aes(AQ,colour=Sex)) + 
   stat_ecdf()
+```
+
+```{r}
+# Multiple ECDFs
+ggplot(au.data, aes(AQ,colour=Sex)) + 
+  stat_ecdf()+facet_wrap(~Sex)
+```
+
+```{r}
+library(car)
+par(mfrow=c(2,2))
+qqPlot(au.females$AQ)
+qqPlot(au.males$AQ)
 ```
 
 ```{r}
@@ -79,13 +110,65 @@ ggcorr(au.data[, c(4:15)],
 ```
 
 ```{r}
+cor(au.data[, c(4:15)], au.data$AQ)#all data 
+```
+
+```{r}
+cor(au.females[, c(4:15)], au.females$AQ)#females
+```
+
+```{r}
+cor(au.males[, c(4:15)], au.males$AQ)#females
+```
+
+
+```{r}
 ggplot(au.data, aes(x=Sex, y=AQ,color=Sex)) + 
   geom_boxplot()+ stat_summary(fun.y=mean, geom="point", shape=23, size=4)+theme_ipsum()
 ```
 
 ```{r}
-t.test(AQ~Sex,au.data)
+boxplot(AQ~Sex,au.data,
+        ylab="Autism Spectrum Quotien (AQ)",xlab="gender",
+        cex.lab=1,outline=F)#hide outliers
+stripchart(AQ~Sex,au.data,vertical=T,
+    method = "jitter", add = TRUE, pch = 20, cex =0.75,col = c('green','orange'))
 ```
+
+```{r}
+shapiro.test(au.females$AQ)
+shapiro.test(au.males$AQ)
+#normality issues!
+```
+
+```{r}
+leveneTest(AQ~Sex,au.data)
+#variance homogeneity issues!
+```
+
+```{r}
+library(lmtest)
+dwtest(AQ~Sex,data=au.data)
+```
+
+```{r}
+t.test(AQ~Sex,au.data)
+library(effsize)#library to calculate Cohen's effect size
+cohen.d(AQ~Sex,au.data)
+```
+
+```{r}
+w.t<-wilcox.test(AQ~Sex,au.data)
+```
+
+
+```{r}
+#estimation of effect size for Wilcoxon indepedent group test
+Zstat<-qnorm(w.t$p.value/2)
+#Now calculate the effect size dividing the absolute #value of Z by the square root of sample size:
+abs(Zstat)/sqrt(593)
+```
+
 
 ```{r}
 require(gridExtra)
@@ -101,5 +184,8 @@ b<-ggplot(au.males, aes(x=AQ, y=FCB.Em.reactivity))+
 grid.arrange(a,b, ncol=2)
 ```
 
+```{r}
+
+```
 
 
