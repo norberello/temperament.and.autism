@@ -16,3 +16,7 @@ b<-ggplot(au.males, aes(x=AQ, y=FCB.Em.reactivity))+
 grid.arrange(a,b, ncol=2)
 ```
 <img src="figures/fig 2.png">
+
+# total brain volume in children with autism
+
+<img src="figures/fig 2.png">
