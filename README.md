@@ -19,4 +19,4 @@ grid.arrange(a,b, ncol=2)
 
 # total brain volume in children with autism
 
-<img src="figures/fig 2.png">
+<img src="two CI bands per group.png">
