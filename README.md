@@ -19,4 +19,6 @@ grid.arrange(a,b, ncol=2)
 
 # total brain volume in children with autism
 
+Hazlett HC, Poe M, Gerig G, Smith RG, Provenzale J, Ross A, Gilmore J, Piven J. Magnetic resonance imaging and head circumference study of brain size in autism: birth through age 2 years. Arch Gen Psychiatry. 2005 Dec;62(12):1366-76. doi: 10.1001/archpsyc.62.12.1366. PMID: 16330725.
+
 <img src="two CI bands per group.png">
